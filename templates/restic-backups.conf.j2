@@ -1,0 +1,11 @@
+#
+# {{ ansible_managed }}
+#
+RESTIC_REPOSITORY={{ restic_backups_target_directory }}
+RESTIC_PASSWORD_FILE=/etc/restic/password.txt
+BACKUP_EXCLUDES="--exclude-file /etc/restic/excludes.txt"
+BACKUP_PATHS="{{ restic_backups_paths | join(' ') }}"
+RETENTION_DAYS={{ restic_backups_retention_days }}
+RETENTION_WEEKS={{ restic_backups_retention_weeks }}
+RETENTION_MONTHS={{ restic_backups_retention_months }}
+RETENTION_YEARS={{ restic_backups_retention_years }}
