@@ -1,0 +1,7 @@
+---
+# restic_backups/defaults/main.yml
+
+restic_backups_retention_days: 7
+restic_backups_retention_weeks: 4
+restic_backups_retention_months: 6
+restic_backups_retention_years: 3
