@@ -1,0 +1,61 @@
+---
+# restic_backups/tasks/main.yml
+
+- name: "Create directory {{ restic_backups_target_directory }}"
+  ansible.builtin.file:
+    path: "{{ restic_backups_target_directory }}"
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0700'
+
+- name: 'Create directory /etc/restic/'
+  ansible.builtin.file:
+    path: '/etc/restic'
+    state: 'directory'
+    owner: 'root'
+    group: 'root'
+    mode: '0700'
+
+- name: 'Create /etc/restic/excludes.txt'
+  ansible.builtin.template:
+    src: 'excludes.txt.j2'
+    dest: '/etc/restic/excludes.txt'
+    owner: 'root'
+    group: 'root'
+    mode: '0400'
+
+- name: 'Create /etc/restic/password.txt'
+  ansible.builtin.template:
+    src: 'password.txt.j2'
+    dest: '/etc/restic/password.txt'
+    owner: 'root'
+    group: 'root'
+    mode: '0400'
+
+- name: 'Create /etc/restic/restic-backups.conf'
+  ansible.builtin.template:
+    src: 'restic-backups.conf.j2'
+    dest: '/etc/restic/restic-backups.conf'
+    owner: 'root'
+    group: 'root'
+    mode: '0400'
+
+- name: 'Create restic-backups.service'
+  ansible.builtin.template:
+    src: 'restic-backups.service.j2'
+    dest: '/etc/systemd/system/restic-backups.service'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+
+- name: 'Enable (but do NOT start) the restic-backups.service'
+  ansible.builtin.systemd:
+    name: 'restic-backups.service'
+    enabled: true
+    daemon_reload: true
+
+- name: 'Initialize the repository'
+  ansible.builtin.command:
+    cmd: "restic init --repo {{ restic_backups_target_directory }} --password-file /etc/restic/password.txt"
+    creates: "{{ restic_backups_target_directory }}/locks/"
